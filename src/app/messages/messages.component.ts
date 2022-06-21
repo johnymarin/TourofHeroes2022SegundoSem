@@ -1,16 +1,35 @@
 import { Component, OnInit } from '@angular/core';
-import { MessageService } from '../message.service';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
+
+import { Hero } from '../hero';
+import { HeroService } from '../hero.service';
 
 @Component({
-  selector: 'app-messages',
-  templateUrl: './messages.component.html',
-  styleUrls: ['./messages.component.css']
+  selector: 'app-hero-detail',
+  templateUrl: './hero-detail.component.html',
+  styleUrls: [ './hero-detail.component.css' ]
 })
-export class MessagesComponent implements OnInit {
+export class HeroDetailComponent implements OnInit {
+  hero: Hero | undefined;
 
-  constructor(public messageService: MessageService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private heroService: HeroService,
+    private location: Location
+  ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.getHero();
   }
 
+  getHero(): void {
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.heroService.getHero(id)
+      .subscribe(hero => this.hero = hero);
+  }
+
+  goBack(): void {
+    this.location.back();
+  }
 }
